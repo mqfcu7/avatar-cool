@@ -1,1 +1,1 @@
-# avatar_cool
+# avatar-cool
