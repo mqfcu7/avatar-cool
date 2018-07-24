@@ -1,184 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="12dp"
-    android:paddingVertical="20dp"
-    android:background="#FFFFFF"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="20dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/girl"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/girl"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="女  生"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="女  生"/>
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/boy"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="男  生"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/loves"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="情  侣"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/friend"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="闺  蜜"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/boy"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="男  生"/>
-        </LinearLayout>
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/loves"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="情  侣"/>
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/pet"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="宠  物"/>
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/friend"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/comic"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="动  漫"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="闺  蜜"/>
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/game"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="游  戏"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    app:riv_corner_radius="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/scenery"
+                    android:background="@drawable/category_item_style"
+                    android:adjustViewBounds="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_category_item_font_size"
+                    android:text="风  景"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pet"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="宠  物"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/comic"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="动  漫"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/game"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="游  戏"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <com.makeramen.roundedimageview.RoundedImageView
-                app:riv_corner_radius="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/scenery"
-                android:background="@drawable/category_item_style"
-                android:adjustViewBounds="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_category_item_font_size"
-                android:text="风  景"/>
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+</layout>
