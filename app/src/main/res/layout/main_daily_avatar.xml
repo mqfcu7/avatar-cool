@@ -22,13 +22,13 @@
 
         </LinearLayout>
 
-        <com.mqfcu7.jiangmeilan.avatar.AvatarSuiteViewGroup
-            android:id="@+id/main_avatar_suite_view_group"
+        <com.mqfcu7.jiangmeilan.avatar.AvatarSuiteLayout
+            android:id="@+id/main_avatar_suite_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="5dp">
 
-        </com.mqfcu7.jiangmeilan.avatar.AvatarSuiteViewGroup>
+        </com.mqfcu7.jiangmeilan.avatar.AvatarSuiteLayout>
 
     </LinearLayout>
 </layout>

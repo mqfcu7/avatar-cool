@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.mqfcu7.jiangmeilan.avatar.AvatarSuiteViewGroup
+    <com.mqfcu7.jiangmeilan.avatar.AvatarSuiteLayout
+        android:id="@+id/list_item_avatar_suite_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.mqfcu7.jiangmeilan.avatar.AvatarSuiteViewGroup>
+    </com.mqfcu7.jiangmeilan.avatar.AvatarSuiteLayout>
 </layout>

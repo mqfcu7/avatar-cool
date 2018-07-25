@@ -3,55 +3,63 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v4.widget.NestedScrollView
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/main_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#efefef"
-            >
+            android:layout_height="match_parent" >
 
-            <LinearLayout
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:background="#efefef"
+                >
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/backgroup"
-                    android:adjustViewBounds="true"/>
+                    android:orientation="vertical">
 
-                <!-- category icon -->
-                <include
-                    android:id="@+id/cateory_list_include"
-                    layout="@layout/main_category_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/backgroup"
+                        android:adjustViewBounds="true"/>
 
-                <!-- daily avatar -->
-                <include
-                    android:id="@+id/daily_avatar_include"
-                    layout="@layout/main_daily_avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    />
+                    <!-- category icon -->
+                    <include
+                        android:id="@+id/cateory_list_include"
+                        layout="@layout/main_category_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
 
-                <!-- hot avatar -->
-                <include
-                    android:id="@+id/hot_avatar_include"
-                    layout="@layout/main_hot_avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    />
+                    <!-- daily avatar -->
+                    <include
+                        android:id="@+id/daily_avatar_include"
+                        layout="@layout/main_daily_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        />
 
-            </LinearLayout>
+                    <!-- hot avatar -->
+                    <include
+                        android:id="@+id/hot_avatar_include"
+                        layout="@layout/main_hot_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        />
 
-        </android.support.v4.widget.NestedScrollView>
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 </layout>

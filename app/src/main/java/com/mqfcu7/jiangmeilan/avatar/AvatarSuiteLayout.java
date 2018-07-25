@@ -1,11 +1,9 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AvatarSuiteViewGroup extends LinearLayout {
+public class AvatarSuiteLayout extends LinearLayout {
     private static final int PADDING_IMAGE = 5;
     private static final int TITLE_HEIGHT = 70;
 
@@ -31,30 +29,20 @@ public class AvatarSuiteViewGroup extends LinearLayout {
     private TextView mTitleView;
     private List<ImageView> mImageViews = new ArrayList<>();
 
-    public AvatarSuiteViewGroup(Context context) {this(context, null);}
+    public AvatarSuiteLayout(Context context) {this(context, null);}
 
-    public AvatarSuiteViewGroup(Context context, AttributeSet attrs) {
+    public AvatarSuiteLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
     }
 
     public void setAvatarSuite(final AvatarSuite suite) {
         mAvatarSuite = suite;
-        mAvatarSuite = new AvatarSuite();
-        mAvatarSuite.title = "好看的女生头像高清 蜜语季节";
-        mAvatarSuite.images_url = new ArrayList<>();
-        mAvatarSuite.images_url.add("https://img2.woyaogexing.com/2018/07/24/c0b2577153393133!400x400_big.jpg");
-        mAvatarSuite.images_url.add("https://img2.woyaogexing.com/2018/07/24/353354b630a9aa5e!400x400_big.jpg");
-        mAvatarSuite.images_url.add("https://img2.woyaogexing.com/2018/07/24/efb755d6db4be33e!400x400_big.jpg");
-        mAvatarSuite.images_url.add("https://img2.woyaogexing.com/2018/07/24/7eccd5fb0ed224d4!400x400_big.jpg");
-        mAvatarSuite.images_url.add("https://img2.woyaogexing.com/2018/07/24/e6ec6c3fc7942303!400x400_big.jpg");
-        mAvatarSuite.images_url.add("https://img2.woyaogexing.com/2018/07/24/c84bf85105cf900e!275x275_big.jpg");
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mWidth = MeasureSpec.getSize(widthMeasureSpec);
-
 
         if (mImageNum == 0) {
             mImageNum = Math.min(mRandom.nextInt(7) + 4, mAvatarSuite.images_url.size());
