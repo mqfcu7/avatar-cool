@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mHotAvatarRecyclerView;
     private SwipeRefreshLayout mSwipeLayout;
 
-    private AvatarSuiteGenerator mAvatarSuiteGenerator = new AvatarSuiteGenerator();
+    CrawlerThread mCrawlerThread;
+    private AvatarSuiteGenerator mAvatarSuiteGenerator;
 
     private class MainHandler extends Handler {
         WeakReference<Activity> mActivity;
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         public void bindAvatarSuite(AvatarSuite avatarSuite) {
             mAvatarSuiteLayout.setAvatarSuite(avatarSuite);
-            Log.d("TAG", avatarSuite.title);
         }
     }
 
@@ -75,13 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
         public AvatarSuiteAdapter(List<AvatarSuite> avatarSuites) {
             mAvatarSuites = avatarSuites;
-            Log.d("TAG", "size: " + mAvatarSuites.size());
         }
 
         @NonNull
         @Override
         public AvatarSuiteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            Log.d("TAG", "onCreateViewHolder");
             LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
             View v = layoutInflater.inflate(R.layout.list_item_hot_avatar, parent,false);
             return new AvatarSuiteHolder(v);
@@ -89,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull AvatarSuiteHolder holder, int position) {
-            Log.d("TAG", "onBindViewHolder: " + position);
             AvatarSuite avatarSuite = mAvatarSuites.get(position);
             holder.bindAvatarSuite(avatarSuite);
         }
@@ -97,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return mAvatarSuites.size();
+        }
+
+        public void addItems(List<AvatarSuite> avatarSuites) {
+            mAvatarSuites.addAll(avatarSuites);
         }
     }
 
@@ -111,11 +112,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        HtmlParser parser = new HtmlParser();
-        parser.asynRandomAvatarSuite(mHandler);
+        mCrawlerThread = CrawlerThread.getInstance();
+        if (!mCrawlerThread.isAlive()) {
+            mCrawlerThread.setDatabase(new Database(getApplicationContext()));
+            mCrawlerThread.start();
+        }
+
+        mAvatarSuiteGenerator = new AvatarSuiteGenerator(getApplicationContext());
 
         initDailyAvatar();
         initHotAvatar();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCrawlerThread.interrupt();
     }
 
     private void initDailyAvatar() {
@@ -131,16 +143,34 @@ public class MainActivity extends AppCompatActivity {
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //mHotAvatarAdapter.notifyDataSetChanged();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSwipeLayout.setRefreshing(false);
+
+                                mHotAvatarAdapter.addItems(mAvatarSuiteGenerator.getUpdateAvatarSuites());
+                                mHotAvatarAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }).start();
             }
         });
 
         mHotAvatarRecyclerView = mBinding.hotAvatarInclude.mainHotRecyclerView;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        linearLayoutManager.setSmoothScrollbarEnabled(false);
         mHotAvatarRecyclerView.setLayoutManager(linearLayoutManager);
         if (mHotAvatarAdapter == null) {
-            mHotAvatarAdapter = new AvatarSuiteAdapter(mAvatarSuiteGenerator.getBatchAvatarSuites(3));
+            mHotAvatarAdapter = new AvatarSuiteAdapter(mAvatarSuiteGenerator.getInitAvatarSuites());
             mHotAvatarRecyclerView.setAdapter(mHotAvatarAdapter);
         }
         mHotAvatarRecyclerView.setNestedScrollingEnabled(false);

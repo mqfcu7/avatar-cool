@@ -21,10 +21,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1000dp"></LinearLayout>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/main_hot_recycler_view"
             android:layout_width="match_parent"
