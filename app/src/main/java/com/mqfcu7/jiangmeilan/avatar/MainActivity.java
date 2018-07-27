@@ -1,5 +1,6 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
+import com.bumptech.glide.Glide;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityMainBinding;
 import android.app.Activity;
 import android.databinding.DataBindingUtil;
@@ -9,6 +10,7 @@ import android.os.Message;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,40 +27,21 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int MAX_HOT_AVATAR_PAGE_NUM = 10;
     ActivityMainBinding mBinding;
-
-    private Map<Integer, String> mHandlerFunction = new HashMap<>();
-    private MainHandler mHandler;
 
     private AvatarSuiteAdapter mHotAvatarAdapter;
     private RecyclerView mHotAvatarRecyclerView;
     private SwipeRefreshLayout mSwipeLayout;
+    private NestedScrollView mNestedScrollView;
 
-    CrawlerThread mCrawlerThread;
+    private CrawlerThread mCrawlerThread;
     private AvatarSuiteGenerator mAvatarSuiteGenerator;
 
-    private class MainHandler extends Handler {
-        WeakReference<Activity> mActivity;
-        public MainHandler(Activity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            for (Map.Entry<Integer, String> entry : mHandlerFunction.entrySet()) {
-                if (entry.getKey().equals(msg.what)) {
-                    try {
-                        Utils.invokeMethod(mActivity.get(), entry.getValue(), new Object[]{msg});
-                    } catch (Exception e) {
-                        Log.w("TAG", e.toString());
-                    }
-                }
-            }
-        }
-    }
+    private int mHotPageNum;
 
     private class AvatarSuiteHolder extends RecyclerView.ViewHolder {
-        private AvatarSuiteLayout mAvatarSuiteLayout;
+        public AvatarSuiteLayout mAvatarSuiteLayout;
 
         public AvatarSuiteHolder(View itemView) {
             super(itemView);
@@ -94,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onViewRecycled(@NonNull AvatarSuiteHolder holder) {
+            super.onViewRecycled(holder);
+            holder.mAvatarSuiteLayout.onReset();
+        }
+
+        @Override
         public int getItemCount() {
             return mAvatarSuites.size();
         }
@@ -108,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public MainActivity() {
-        mHandlerFunction.put(Utils.MSG_TYPE_DAILY_AVATAR, "onDailyAvatar");
-
-        mHandler = new MainHandler(this);
     }
 
     @Override
@@ -162,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 mSwipeLayout.setRefreshing(false);
 
-                                mHotAvatarAdapter.pushItems(mAvatarSuiteGenerator.getUpdateAvatarSuites());
+                                mHotAvatarAdapter.pushItems(mAvatarSuiteGenerator.getUpdateAvatarSuites(5));
                                 mHotAvatarAdapter.notifyItemRangeChanged(0, 5);
                             }
                         });
@@ -172,35 +158,36 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mHotAvatarRecyclerView = mBinding.hotAvatarInclude.mainHotRecyclerView;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setSmoothScrollbarEnabled(false);
         mHotAvatarRecyclerView.setLayoutManager(linearLayoutManager);
         if (mHotAvatarAdapter == null) {
-            mHotAvatarAdapter = new AvatarSuiteAdapter(mAvatarSuiteGenerator.getInitAvatarSuites());
+            mHotAvatarAdapter = new AvatarSuiteAdapter(mAvatarSuiteGenerator.getInitAvatarSuites(5));
             mHotAvatarRecyclerView.setAdapter(mHotAvatarAdapter);
         }
         mHotAvatarRecyclerView.setNestedScrollingEnabled(false);
-        ViewCompat.setNestedScrollingEnabled(mHotAvatarRecyclerView, false);
-        mHotAvatarRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        mHotAvatarRecyclerView.setItemViewCacheSize(20);
+        mHotAvatarRecyclerView.setDrawingCacheEnabled(true);
+        mHotAvatarRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        //ViewCompat.setNestedScrollingEnabled(mHotAvatarRecyclerView, false);
 
+        mNestedScrollView = mBinding.mainNestedScrollView;
+        mNestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
-                int curPos = l.findFirstVisibleItemPosition();
-                int total = l.getItemCount();
-                Log.d("TAG", "pos: " + curPos + ", total: " + total);
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                    /*
+                    if (mHotPageNum > MAX_HOT_AVATAR_PAGE_NUM) {
+                        return;
+                    }
+                    */
+                    int pos = mHotAvatarAdapter.getItemCount();
+                    mHotAvatarAdapter.appendItems(mAvatarSuiteGenerator.getUpdateAvatarSuites(5));
+                    mHotAvatarAdapter.notifyItemRangeChanged(pos, 5);
+                    mHotPageNum ++;
+                    Glide.get(getApplicationContext()).clearMemory();
+                }
             }
         });
-    }
-
-    private void onDailyAvatar(Message msg) {
-        if (msg.obj == null) return;
-
-        AvatarSuite avatarSuite = (AvatarSuite) msg.obj;
     }
 }

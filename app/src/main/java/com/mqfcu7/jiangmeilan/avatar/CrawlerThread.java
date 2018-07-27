@@ -1,12 +1,7 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -14,12 +9,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 public class CrawlerThread extends Thread {
     private static CrawlerThread sCrawlerThread = new CrawlerThread();
 
     private static final String DOMAIN_TOUXIANG = "https://www.woyaogexing.com";
 
+    private Random mRandom = new Random();
     private Database mDatabase;
     private int mTouXiangPageNum = 1;
 
@@ -62,7 +59,7 @@ public class CrawlerThread extends Thread {
                 Document doc = Jsoup.connect(url).get();
                 Elements elements = doc.select("div.contLeftA");
                 AvatarSuite as = new AvatarSuite();
-                as.title = elements.select("h1").text();
+                as.title = parseTitle(elements.select("h1").text());
                 as.images_url = new ArrayList<>();
                 elements = elements.select("li.tx-img");
                 for (int j = 0; j < elements.size(); ++ j) {
@@ -80,7 +77,7 @@ public class CrawlerThread extends Thread {
         while (!queue.isEmpty()) {
             AvatarSuite a = queue.poll();
             if (a.images_url.size() < 4) continue;
-            if (a.images_url.size() <= 10) {
+            if (a.images_url.size() < mRandom.nextInt(4) + 7) {
                 a.calcHash();
                 collect.add(a);
                 continue;
@@ -110,5 +107,13 @@ public class CrawlerThread extends Thread {
         }
 
         return "/touxiang/index_" + mTouXiangPageNum + ".html";
+    }
+
+    private String parseTitle(String title) {
+        String[] t = title.split(" ");
+        if (t.length > 1) {
+            return t[t.length - 1];
+        }
+        return title;
     }
 }
