@@ -47,7 +47,6 @@ public class CrawlerThread extends Thread {
     }
 
     private void crawlAvatarSuites() {
-        Log.d("TAG", "num: " + mDatabase.getNewAvatarSuiteNum());
         if (mDatabase.getNewAvatarSuiteNum() > 100) {
             return;
         }

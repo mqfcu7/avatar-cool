@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
         private List<AvatarSuite> mAvatarSuites;
 
         public AvatarSuiteAdapter(List<AvatarSuite> avatarSuites) {
-            mAvatarSuites = avatarSuites;
+            mAvatarSuites = new LinkedList<>();
+            mAvatarSuites.addAll(avatarSuites);
         }
 
         @NonNull
@@ -96,7 +98,11 @@ public class MainActivity extends AppCompatActivity {
             return mAvatarSuites.size();
         }
 
-        public void addItems(List<AvatarSuite> avatarSuites) {
+        public void pushItems(List<AvatarSuite> avatarSuites) {
+            mAvatarSuites.addAll(0, avatarSuites);
+        }
+
+        public void appendItems(List<AvatarSuite> avatarSuites) {
             mAvatarSuites.addAll(avatarSuites);
         }
     }
@@ -156,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 mSwipeLayout.setRefreshing(false);
 
-                                mHotAvatarAdapter.addItems(mAvatarSuiteGenerator.getUpdateAvatarSuites());
-                                mHotAvatarAdapter.notifyDataSetChanged();
+                                mHotAvatarAdapter.pushItems(mAvatarSuiteGenerator.getUpdateAvatarSuites());
+                                mHotAvatarAdapter.notifyItemRangeChanged(0, 5);
                             }
                         });
                     }
@@ -184,6 +190,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int curPos = l.findFirstVisibleItemPosition();
+                int total = l.getItemCount();
+                Log.d("TAG", "pos: " + curPos + ", total: " + total);
             }
         });
     }
