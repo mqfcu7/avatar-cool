@@ -1,30 +1,21 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
-import com.bumptech.glide.Glide;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityMainBinding;
-import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MAX_HOT_AVATAR_PAGE_NUM = 10;
@@ -35,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeLayout;
     private NestedScrollView mNestedScrollView;
 
-    private CrawlerThread mCrawlerThread;
     private AvatarSuiteGenerator mAvatarSuiteGenerator;
 
     private int mHotPageNum;
@@ -103,12 +93,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
-        mCrawlerThread = CrawlerThread.getInstance();
-        if (!mCrawlerThread.isAlive()) {
-            mCrawlerThread.setDatabase(new Database(getApplicationContext()));
-            mCrawlerThread.start();
-        }
+        Utils.setStatusBarLightMode(this, getWindow(), true);
 
         mAvatarSuiteGenerator = new AvatarSuiteGenerator(getApplicationContext());
 
@@ -119,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCrawlerThread.interrupt();
     }
 
     private void initDailyAvatar() {
@@ -185,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                     mHotAvatarAdapter.appendItems(mAvatarSuiteGenerator.getUpdateAvatarSuites(5));
                     mHotAvatarAdapter.notifyItemRangeChanged(pos, 5);
                     mHotPageNum ++;
-                    Glide.get(getApplicationContext()).clearMemory();
                 }
             }
         });
