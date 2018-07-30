@@ -1,6 +1,9 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
+import com.bumptech.glide.Glide;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityMainBinding;
+
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int MAX_HOT_AVATAR_PAGE_NUM = 10;
+    private static final int MAX_HOT_AVATAR_PAGE_NUM = 7;
     ActivityMainBinding mBinding;
 
     private AvatarSuiteAdapter mHotAvatarAdapter;
@@ -95,8 +98,10 @@ public class MainActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Utils.setStatusBarLightMode(this, getWindow(), true);
 
+        Glide.get(getApplicationContext()).clearMemory();
         mAvatarSuiteGenerator = new AvatarSuiteGenerator(getApplicationContext());
 
+        initCategoryNavigateLayout();
         initDailyAvatar();
         initHotAvatar();
     }
@@ -104,6 +109,65 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void initCategoryNavigateLayout() {
+        mBinding.cateoryListInclude.mainCategoryGirlLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.GIRL, "小姐姐");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategoryBoyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.BOY, "小哥哥");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategoryLovesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.LOVES, "情侣");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategoryFriendLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.FRIEND, "闺蜜");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategoryPetLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.PET, "宠物");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategoryComicLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.COMIC, "动漫");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategoryGameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.GAME, "游戏");
+                startActivity(intent);
+            }
+        });
+        mBinding.cateoryListInclude.mainCategorySceneryLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AvatarListActivity.newIntent(getApplicationContext(), Database.AvatarType.SCENERY, "风景");
+                startActivity(intent);
+            }
+        });
     }
 
     private void initDailyAvatar() {
@@ -160,11 +224,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                    /*
                     if (mHotPageNum > MAX_HOT_AVATAR_PAGE_NUM) {
                         return;
                     }
-                    */
                     int pos = mHotAvatarAdapter.getItemCount();
                     mHotAvatarAdapter.appendItems(mAvatarSuiteGenerator.getUpdateAvatarSuites(5));
                     mHotAvatarAdapter.notifyItemRangeChanged(pos, 5);

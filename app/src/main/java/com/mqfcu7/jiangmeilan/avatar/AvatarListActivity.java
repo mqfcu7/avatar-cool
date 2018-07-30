@@ -61,16 +61,23 @@ public class AvatarListActivity extends AppCompatActivity {
         Utils.setStatusBarLightMode(this, getWindow(), true);
         mDatabase = new Database(getApplicationContext());
 
-        /*
+        Glide.get(getApplicationContext()).clearMemory();
         mAvatarType = (int)getIntent().getSerializableExtra(EXTRA_AVATAR_TYPE);
         mTitle = (String)getIntent().getSerializableExtra(EXTRA_TITLE);
         mBinding.avatarListTitleText.setText(mTitle);
-        */
 
-        mAvatarType = Database.AvatarType.GIRL;
-
+        initBackBanner();
         createAvatarList();
         createFrameLayout();
+    }
+
+    private void initBackBanner() {
+        mBinding.avatarListBackImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void createAvatarList() {
