@@ -1,9 +1,11 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -34,11 +36,19 @@ public class AvatarsLayout extends LinearLayout {
         }
         if (!mImageViews.isEmpty()) {
             for (int i = 0; i < IMAGE_NUM; ++ i) {
+                final String url = mUrls[i];
                 int width = (mWidth - IMAGE_PADDING * 5) / IMAGE_NUM;
                 Glide.with(getContext())
-                        .load(mUrls[i])
+                        .load(url)
                         .apply(new RequestOptions().override(width, width))
                         .into(mImageViews.get(i));
+                mImageViews.get(i).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = AvatarDetailActivity.newIntent(getContext(), url);
+                        getContext().startActivity(intent);
+                    }
+                });
             }
         }
     }
@@ -74,13 +84,21 @@ public class AvatarsLayout extends LinearLayout {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         int offx = IMAGE_PADDING;
         for (int i = 0; i < IMAGE_NUM; ++ i) {
+            final String url = mUrls[i];
             ImageView v = new ImageView(getContext());
             v.setPadding(IMAGE_PADDING / 2, 0, IMAGE_PADDING / 2, 0);
             Glide.with(getContext())
-                    .load(mUrls[i])
+                    .load(url)
                     .apply(new RequestOptions().override(width, width))
                     .into(v);
             v.layout(offx, 0, offx + width, width);
+            v.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = AvatarDetailActivity.newIntent(getContext(), url);
+                    getContext().startActivity(intent);
+                }
+            });
             addView(v, layoutParams);
             mImageViews.add(v);
             offx += width + IMAGE_PADDING;

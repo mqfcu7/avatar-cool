@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -37,9 +38,19 @@ public class AvatarDetailActivity extends AppCompatActivity {
 
         Glide.get(getApplicationContext()).clearMemory();
 
-        mImageUrl = "https://img2.woyaogexing.com/2018/07/31/e30de360d02644418330f1581584d222!400x400.jpeg";
+        mImageUrl = (String) getIntent().getSerializableExtra(EXTRA_AVATAR_URL);
 
+        initBackBanner();
         initImageViews();
+    }
+
+    private void initBackBanner() {
+        mBinding.avatarDetailBackImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void initImageViews() {
@@ -61,7 +72,19 @@ public class AvatarDetailActivity extends AppCompatActivity {
                 Glide.with(AvatarDetailActivity.this)
                         .load(mImageUrl)
                         .apply(new RequestOptions().override(v.getWidth()))
-                        .apply(new RequestOptions().bitmapTransform(new RoundedCorners(20)))
+                        .apply(new RequestOptions().bitmapTransform(new RoundedCorners(v.getWidth() / 5)))
+                        .into(v);
+            }
+        });
+
+        mBinding.avatarDetailCircleImageView.post(new Runnable() {
+            @Override
+            public void run() {
+                ImageView v = mBinding.avatarDetailCircleImageView;
+                Glide.with(AvatarDetailActivity.this)
+                        .load(mImageUrl)
+                        .apply(new RequestOptions().override(v.getWidth()))
+                        .apply(new RequestOptions().circleCrop())
                         .into(v);
             }
         });
