@@ -61,7 +61,7 @@ public class CategoryNavigateLayout extends LinearLayout {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        mImageBuilder.apply(new RequestOptions().override(w))
+        mImageBuilder.apply(new RequestOptions().override(w, w))
                 .apply(new RequestOptions().circleCrop())
                 .into(mImageView);
         mImageView.layout(0, 0, w, w);

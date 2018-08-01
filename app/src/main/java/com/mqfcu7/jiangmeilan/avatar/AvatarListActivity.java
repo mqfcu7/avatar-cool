@@ -108,10 +108,10 @@ public class AvatarListActivity extends AppCompatActivity {
         mFrameLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void loadMore() {
-                int num = updateAvatarList(2, 9);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        int num = updateAvatarList(2, 15);
                         mAdapter.notifyDataSetChanged();
                         mFrameLayout.loadMoreComplete(true);
                     }

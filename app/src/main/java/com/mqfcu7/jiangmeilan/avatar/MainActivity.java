@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int MAX_HOT_AVATAR_PAGE_NUM = 7;
+    private static final int MAX_HOT_AVATAR_PAGE_NUM = 5;
     ActivityMainBinding mBinding;
 
     private AvatarSuiteAdapter mHotAvatarAdapter;
