@@ -27,13 +27,32 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/background_image_view"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/background"
-                        android:adjustViewBounds="true"/>
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/background_image_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/background"
+                            android:adjustViewBounds="true"/>
+                        <com.github.clans.fab.FloatingActionButton
+                            xmlns:fab="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/fab_edit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="40dp"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/ic_edit"
+                            fab:fab_size="mini"
+                            fab:fab_colorNormal="#F50057"
+                            fab:fab_colorPressed="#E8004A"
+                            fab:fab_colorRipple="#C20024"
+                            fab:fab_elevationCompat="6dp" />
+                    </RelativeLayout>
 
                     <!-- category icon -->
                     <include
@@ -41,6 +60,7 @@
                         layout="@layout/main_category_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/background_image_view"
                         />
 
                     <!-- daily avatar -->

@@ -34,4 +34,5 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.9.2'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.chanven.lib:cptr:1.1.0'
+    implementation 'com.github.clans:fab:1.6.4'
 }

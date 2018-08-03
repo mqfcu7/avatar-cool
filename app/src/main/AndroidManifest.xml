@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".AvatarDetailActivity" android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".BuildAvatarActivity" android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
