@@ -41,6 +41,7 @@ public class AvatarDetailActivity extends AppCompatActivity {
         mImageUrl = (String) getIntent().getSerializableExtra(EXTRA_AVATAR_URL);
 
         initBackBanner();
+        initforwardBanner();
         initImageViews();
     }
 
@@ -49,6 +50,16 @@ public class AvatarDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+    }
+
+    private void initforwardBanner() {
+        mBinding.avatarDetailForwardImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = BuildAvatarActivity.newIntent(AvatarDetailActivity.this, mImageUrl);
+                startActivity(intent);
             }
         });
     }

@@ -35,4 +35,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.chanven.lib:cptr:1.1.0'
     implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
 }

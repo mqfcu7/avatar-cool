@@ -10,16 +10,20 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        mCrawlerThread = CrawlerThread.getInstance();
-        if (!mCrawlerThread.isAlive()) {
-            mCrawlerThread.setDatabase(new Database(getApplicationContext()));
-            mCrawlerThread.start();
-        }
+        startCrawlerThread();
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
         mCrawlerThread.interrupt();
+    }
+
+    private void startCrawlerThread() {
+        mCrawlerThread = CrawlerThread.getInstance();
+        if (!mCrawlerThread.isAlive()) {
+            mCrawlerThread.setDatabase(new Database(getApplicationContext()));
+            mCrawlerThread.start();
+        }
     }
 }

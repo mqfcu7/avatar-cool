@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".App"
@@ -14,19 +16,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AvatarListActivity" android:screenOrientation="portrait">
+        <activity android:name=".AvatarListActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
         </activity>
-        <activity android:name=".AvatarDetailActivity" android:screenOrientation="portrait">
+        <activity android:name=".AvatarDetailActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
         </activity>
-        <activity android:name=".BuildAvatarActivity" android:screenOrientation="portrait">
+        <activity android:name=".BuildAvatarActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.mqfcu7.jiangmeilan.avatar.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>

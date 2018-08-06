@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "com.mqfcu7.jianmeilan.avatar";
@@ -80,7 +81,9 @@ public class Database extends SQLiteOpenHelper {
                 + AvatarSuiteColumns.VISITED + " integer"
                 + ");");
 
-        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(0,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/0a7102a6d6460eb1!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/fd52adf4380896d9!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/5b3c53c748ff7123!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/ab6687ddb2b5a1d9!200x200.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(0,0,'可爱好看的气球','',5,'http://img.woyaogexing.com/touxiang/fengjing/20140210/0a7102a6d6460eb1!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/fd52adf4380896d9!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/5b3c53c748ff7123!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/ab6687ddb2b5a1d9!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/5720409b2caef724!200x200.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(1,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/0698b9aa4317bad2!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/b8dea471a0fb4a27!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/fcfb3b808ee3519c!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/3345c94f1b4e3458!200x200.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(2,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/eb71e13fd5a6ecd4!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/faa78040e72f2f28!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/c64b7a33c1ef42ff!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/31e59cac2bc07f02!200x200.jpg',0);");
     }
 
     private void createAvatarsTable(SQLiteDatabase db) {
@@ -168,7 +171,19 @@ public class Database extends SQLiteOpenHelper {
         updateVisitedAvatarSuites(result);
 
         if (is_strict && num > 0) {
-            result.addAll(getOldAvatarSuites(num));
+            List<AvatarSuite> suites = getOldAvatarSuites(num);
+            for (AvatarSuite suite : suites) {
+                boolean repeat = false;
+                for (AvatarSuite s : result) {
+                    if (s.id == suite.id) {
+                        repeat = true;
+                        break;
+                    }
+                }
+                if (!repeat) {
+                    result.add(suite);
+                }
+            }
         }
 
         return result;

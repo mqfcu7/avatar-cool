@@ -1,11 +1,17 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
 import com.bumptech.glide.Glide;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityMainBinding;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
@@ -13,16 +19,24 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MAX_HOT_AVATAR_PAGE_NUM = 5;
     ActivityMainBinding mBinding;
+
+    public static String permissionArray[] = {
+            "android.permission.WRITE_EXTERNAL_STORAGE"
+    };
+
+    private AvatarSuiteLayout mAvatarSuiteLayout;
 
     private AvatarSuiteAdapter mHotAvatarAdapter;
     private RecyclerView mHotAvatarRecyclerView;
@@ -97,10 +111,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Utils.setStatusBarLightMode(this, getWindow(), true);
+        requestPermission();
 
         Glide.get(getApplicationContext()).clearMemory();
         mAvatarSuiteGenerator = new AvatarSuiteGenerator(getApplicationContext());
 
+        initFloatingButton();
         initCategoryNavigateLayout();
         initDailyAvatar();
         initHotAvatar();
@@ -109,6 +125,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void initFloatingButton() {
+        mBinding.fabEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PictureSelector.create(MainActivity.this)
+                        .openGallery(PictureMimeType.ofImage())
+                        .maxSelectNum(1)
+                        .selectionMode(PictureConfig.SINGLE)
+                        .isCamera(true)
+                        .imageSpanCount(3)
+                        .compress(true)
+                        .forResult(PictureConfig.CHOOSE_REQUEST);
+
+            }
+        });
     }
 
     private void initCategoryNavigateLayout() {
@@ -171,7 +204,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDailyAvatar() {
-        mBinding.dailyAvatarInclude.mainAvatarSuiteLayout.setAvatarSuite(mAvatarSuiteGenerator.randomAvatarSuite());
+        mAvatarSuiteLayout = mBinding.dailyAvatarInclude.mainAvatarSuiteLayout;
+        mAvatarSuiteLayout.setAvatarSuite(mAvatarSuiteGenerator.randomAvatarSuite());
     }
 
     private void initHotAvatar() {
@@ -234,5 +268,41 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    if (!selectList.isEmpty()) {
+                        Log.d("TAG", "photo: " + selectList.get(0).getCompressPath());
+                        Intent intent = AvatarDetailActivity.newIntent(
+                                getApplicationContext(), selectList.get(0).getCompressPath());
+                        startActivity(intent);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            List<String> permissionList = new ArrayList<>();
+            for (String permission : permissionArray) {
+                if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionList.add(permission);
+                }
+            }
+            if (permissionList.size() > 0) {
+                requestPermissions(permissionList.toArray(new String[permissionList.size()]), 100);
+            }
+
+            if (checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 101);
+            }
+        }
     }
 }
