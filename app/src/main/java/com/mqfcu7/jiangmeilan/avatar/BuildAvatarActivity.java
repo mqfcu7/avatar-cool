@@ -20,6 +20,7 @@ import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityBuildAvatarBinding;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -76,5 +77,17 @@ public class BuildAvatarActivity extends AppCompatActivity {
                 mBinding.stickerView.onSave();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

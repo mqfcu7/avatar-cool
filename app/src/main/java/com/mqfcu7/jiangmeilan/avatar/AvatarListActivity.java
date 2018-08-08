@@ -23,6 +23,7 @@ import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.loadmore.OnLoadMoreListener;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityAvatarListBinding;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -69,6 +70,18 @@ public class AvatarListActivity extends AppCompatActivity {
         initBackBanner();
         createAvatarList();
         createFrameLayout();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void initBackBanner() {

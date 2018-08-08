@@ -16,6 +16,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityAvatarDetailBinding;
+import com.umeng.analytics.MobclickAgent;
 
 public class AvatarDetailActivity extends AppCompatActivity {
     private static final String EXTRA_AVATAR_URL =
@@ -99,5 +100,17 @@ public class AvatarDetailActivity extends AppCompatActivity {
                         .into(v);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

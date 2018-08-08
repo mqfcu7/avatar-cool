@@ -6,6 +6,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityMainBinding;
+import com.umeng.analytics.MobclickAgent;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -304,5 +305,17 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 101);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }
