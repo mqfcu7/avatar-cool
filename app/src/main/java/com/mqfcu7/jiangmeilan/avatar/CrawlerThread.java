@@ -101,7 +101,8 @@ public class CrawlerThread extends Thread {
         while (!queue.isEmpty()) {
             AvatarSuite a = queue.poll();
             if (a.images_url.size() < 4) continue;
-            if (a.images_url.size() < mRandom.nextInt(4) + 7) {
+            //if (a.images_url.size() < mRandom.nextInt(4) + 7) {
+            if (a.images_url.size() < 10) {
                 a.calcHash();
                 collect.add(a);
                 continue;
@@ -134,7 +135,7 @@ public class CrawlerThread extends Thread {
     }
 
     private String parseTitle(String title) {
-        String[] t = title.split(" ");
+        String[] t = title.split(" |：|:");
         if (t.length > 1) {
             return t[t.length - 1];
         }

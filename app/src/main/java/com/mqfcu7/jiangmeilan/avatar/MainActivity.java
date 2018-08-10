@@ -1,6 +1,7 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         mAvatarSuiteGenerator = new AvatarSuiteGenerator(getApplicationContext());
 
         initFloatingButton();
+        initDailyFeel();
         initCategoryNavigateLayout();
         initDailyAvatar();
         initHotAvatar();
@@ -204,9 +207,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initDailyFeel() {
+        Glide.with(getApplicationContext())
+                .load("http://tvax2.sinaimg.cn/crop.211.114.221.221.180/005Ui5o3ly8fq8tzddgmkj30jg0g7q36.jpg")
+                .apply(new RequestOptions().circleCrop())
+                .into(mBinding.dailyFeelInclude.mainDailyFeelImageView);
+        mBinding.dailyFeelInclude.mainDailyFeelCopyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void initDailyAvatar() {
         mAvatarSuiteLayout = mBinding.dailyAvatarInclude.mainAvatarSuiteLayout;
         mAvatarSuiteLayout.setAvatarSuite(mAvatarSuiteGenerator.randomAvatarSuite());
+        mAvatarSuiteLayout.setPaddingVertical(5);
     }
 
     private void initHotAvatar() {

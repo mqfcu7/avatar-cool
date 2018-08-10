@@ -82,8 +82,12 @@ public class Database extends SQLiteOpenHelper {
                 + ");");
 
         db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(0,0,'可爱好看的气球','',5,'http://img.woyaogexing.com/touxiang/fengjing/20140210/0a7102a6d6460eb1!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/fd52adf4380896d9!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/5b3c53c748ff7123!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/ab6687ddb2b5a1d9!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/5720409b2caef724!200x200.jpg',0);");
-        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(1,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/0698b9aa4317bad2!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/b8dea471a0fb4a27!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/fcfb3b808ee3519c!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/3345c94f1b4e3458!200x200.jpg',0);");
-        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(2,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/eb71e13fd5a6ecd4!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/faa78040e72f2f28!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/c64b7a33c1ef42ff!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/31e59cac2bc07f02!200x200.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(1,-21141116,'我以微笑淡流年','',6,'http://img2.woyaogexing.com/2018/08/07/48b7c4dead001777!480x480.jpg,http://img2.woyaogexing.com/2018/08/07/767f2a847e8fe75c!480x480.jpg,http://img2.woyaogexing.com/2018/08/07/ef9f6e435c5ec0d1!480x480.jpg,http://img2.woyaogexing.com/2018/08/07/26e177fb69583be9!480x480.jpg,http://img2.woyaogexing.com/2018/08/07/0260ab4686440d5c!480x480.jpg,http://img2.woyaogexing.com/2018/08/07/513f71835d22ce91!480x480.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(2,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/0698b9aa4317bad2!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/b8dea471a0fb4a27!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/fcfb3b808ee3519c!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/3345c94f1b4e3458!200x200.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(3,578267812,'一对两张情头','',8,'http://img2.woyaogexing.com/2018/08/07/f95ac91fac22455490fb1f494f4bcfb3!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/1cc78f9ea5e54025873d33c901bf96db!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/837cdecbc42f4b148db11fa363c6bb2a!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/d8254541209b43d0ad378ae8ddbb900b!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/61bbe40d1f564dc3b6837f5978ca4145!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/60b56845dd514dabbd76eaddb40e8fd6!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/8b62d2f07c014c53841ca3f4c8d97800!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/f3e90c0642d746848c124a94b100eed2!400x400.jpeg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(4,0,'可爱好看的气球','',4,'http://img.woyaogexing.com/touxiang/fengjing/20140210/eb71e13fd5a6ecd4!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/faa78040e72f2f28!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/c64b7a33c1ef42ff!200x200.jpg,http://img.woyaogexing.com/touxiang/fengjing/20140210/31e59cac2bc07f02!200x200.jpg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(5,-334616750,'春风十里不如你','',9,'http://img2.woyaogexing.com/2018/08/06/be0337087bf841ae832e0608216d921a!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/af0a4df70f084443a83f206facab8a57!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/b384a316adee4245a5f0af6d89a44352!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/f26eaf477fc4471d91be79ac946ccbe1!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/f7a0f83042384278be34edb3c107778b!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/87405feb0b024302b5010dcb5a50380f!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/ea29deddb8c64e73ae0b45a96e3656c6!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/0bf2d1eeb31043b8906e6a8f2af7ad5b!400x400.jpeg,http://img2.woyaogexing.com/2018/08/06/e11a19723d60407390863d5a063b3477!400x400.jpeg',0);");
+        db.execSQL("insert into " + TABLE_AVATAR_SUITE + " values(6,1466955915,'超酷的小哥哥，来来回却只有我这个陌生人。','',5,'http://img2.woyaogexing.com/2018/08/07/c3acaaa597144d639fc6fc73083601cb!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/4856a6f97b5c4410a676d12a11d159a2!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/5a83e435175d41c4988e42f9d8d5eb73!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/6bc2840f9404488db329712b3e7c7e56!400x400.jpeg,http://img2.woyaogexing.com/2018/08/07/1c140ff500844a0483b31f45b83845d6!400x400.jpeg',0);");
     }
 
     private void createAvatarsTable(SQLiteDatabase db) {
@@ -170,6 +174,7 @@ public class Database extends SQLiteOpenHelper {
 
         updateVisitedAvatarSuites(result);
 
+        /*
         if (is_strict && num > 0) {
             List<AvatarSuite> suites = getOldAvatarSuites(num);
             for (AvatarSuite suite : suites) {
@@ -185,6 +190,7 @@ public class Database extends SQLiteOpenHelper {
                 }
             }
         }
+        */
 
         return result;
     }

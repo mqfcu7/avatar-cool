@@ -232,7 +232,7 @@ public class StickerView extends View {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            Toast.makeText(mActivity.getApplicationContext(), "保存成功", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity.getApplicationContext(), "保存成功", Toast.LENGTH_SHORT).show();
         }
 
         private void saveImage(final Bitmap image) {

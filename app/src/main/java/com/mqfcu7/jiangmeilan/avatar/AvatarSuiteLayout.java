@@ -2,6 +2,7 @@ package com.mqfcu7.jiangmeilan.avatar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,7 +20,7 @@ import java.util.Random;
 
 public class AvatarSuiteLayout extends LinearLayout {
     private static final int PADDING_IMAGE = 5;
-    private static final int TITLE_HEIGHT = 120;
+    private int TITLE_HEIGHT = 90;
 
     private AvatarSuite mAvatarSuite;
     private Random mRandom = new Random();
@@ -27,6 +28,7 @@ public class AvatarSuiteLayout extends LinearLayout {
     private int mWidth;
     private int mHeight;
 
+    private int mVerticalPadding = 30;
     private TextView mTitleView;
     private List<ImageView> mImageViews = new ArrayList<>();
 
@@ -41,13 +43,17 @@ public class AvatarSuiteLayout extends LinearLayout {
         mAvatarSuite = suite;
     }
 
+    public void setPaddingVertical(int padding) {
+        mVerticalPadding = padding;
+        TITLE_HEIGHT = 60 + padding;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mWidth = MeasureSpec.getSize(widthMeasureSpec);
 
         if (mImageViews.isEmpty()) {
             int imageNum = Math.min(mRandom.nextInt(7) + 4, mAvatarSuite.images_url.size());
-            Log.d("TAG", "title: " + mAvatarSuite.title);
             try {
                 Utils.invokeMethod(this, "calcMeasure" + imageNum, null);
             } catch (Exception e) {
@@ -65,8 +71,6 @@ public class AvatarSuiteLayout extends LinearLayout {
     }
 
     public void onReset() {
-        Log.d("TAG", "onReset");
-
         removeAllViews();
         mImageViews.clear();
     }
@@ -81,8 +85,10 @@ public class AvatarSuiteLayout extends LinearLayout {
 
         mTitleView.setText(mAvatarSuite.title);
         mTitleView.setGravity(Gravity.CENTER);
+        mTitleView.setLines(1);
+        mTitleView.setEllipsize(TextUtils.TruncateAt.END);
 
-        mTitleView.layout(0, 40, mWidth, TITLE_HEIGHT);
+        mTitleView.layout(0, mVerticalPadding, mWidth, TITLE_HEIGHT);
         addView(mTitleView, layoutParams);
     }
 

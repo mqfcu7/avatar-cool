@@ -25,6 +25,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#eeeeee"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -48,9 +49,9 @@
                             android:layout_marginLeft="20dp"
                             android:src="@drawable/ic_edit"
                             fab:fab_size="mini"
-                            fab:fab_colorNormal="#F50057"
-                            fab:fab_colorPressed="#E8004A"
-                            fab:fab_colorRipple="#C20024"
+                            fab:fab_colorNormal="#f48498"
+                            fab:fab_colorPressed="#f48498"
+                            fab:fab_colorRipple="#f48498"
                             fab:fab_elevationCompat="6dp" />
                     </RelativeLayout>
 
@@ -60,7 +61,14 @@
                         layout="@layout/main_category_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/background_image_view"
+                        />
+
+                    <include
+                        android:id="@+id/daily_feel_include"
+                        layout="@layout/main_daily_feel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
                         />
 
                     <!-- daily avatar -->

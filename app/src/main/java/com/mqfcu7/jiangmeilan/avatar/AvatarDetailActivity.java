@@ -56,7 +56,7 @@ public class AvatarDetailActivity extends AppCompatActivity {
     }
 
     private void initforwardBanner() {
-        mBinding.avatarDetailForwardImage.setOnClickListener(new View.OnClickListener() {
+        mBinding.avatarDetailEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = BuildAvatarActivity.newIntent(AvatarDetailActivity.this, mImageUrl);
@@ -76,6 +76,13 @@ public class AvatarDetailActivity extends AppCompatActivity {
                         .into(v);
             }
         });
+        mBinding.avatarDetailBigImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = BuildAvatarActivity.newIntent(AvatarDetailActivity.this, mImageUrl);
+                startActivity(intent);
+            }
+        });
 
         mBinding.avatarDetailRoundImageView.post(new Runnable() {
             @Override
@@ -88,6 +95,13 @@ public class AvatarDetailActivity extends AppCompatActivity {
                         .into(v);
             }
         });
+        mBinding.avatarDetailRoundImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = BuildAvatarActivity.newIntent(AvatarDetailActivity.this, mImageUrl);
+                startActivity(intent);
+            }
+        });
 
         mBinding.avatarDetailCircleImageView.post(new Runnable() {
             @Override
@@ -98,6 +112,13 @@ public class AvatarDetailActivity extends AppCompatActivity {
                         .apply(new RequestOptions().override(v.getWidth()))
                         .apply(new RequestOptions().circleCrop())
                         .into(v);
+            }
+        });
+        mBinding.avatarDetailCircleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = BuildAvatarActivity.newIntent(AvatarDetailActivity.this, mImageUrl);
+                startActivity(intent);
             }
         });
     }
