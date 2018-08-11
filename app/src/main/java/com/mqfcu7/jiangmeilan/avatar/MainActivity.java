@@ -25,11 +25,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Toast;
+
+import org.jsoup.helper.StringUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MAX_HOT_AVATAR_PAGE_NUM = 5;
@@ -49,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private AvatarSuiteGenerator mAvatarSuiteGenerator;
 
     private int mHotPageNum;
+    private String mUA;
+    private CrawlerFeelSuite mCrawlerFeelSuite = new CrawlerFeelSuite();
+    private List<FeelSuite> mFeelSuites;
+    private Database mDatabase;
 
     private class AvatarSuiteHolder extends RecyclerView.ViewHolder {
         public AvatarSuiteLayout mAvatarSuiteLayout;
@@ -115,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Utils.setStatusBarLightMode(this, getWindow(), true);
         requestPermission();
+        mDatabase = new Database(getApplicationContext());
+        mUA = Utils.getUserAgent(getApplicationContext());
+        CrawlerThread.setUA(mUA);
 
         Glide.get(getApplicationContext()).clearMemory();
         mAvatarSuiteGenerator = new AvatarSuiteGenerator(getApplicationContext());
@@ -208,14 +220,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDailyFeel() {
+        FeelSuite feel = mDatabase.getFeelSuite();
         Glide.with(getApplicationContext())
-                .load("http://tvax2.sinaimg.cn/crop.211.114.221.221.180/005Ui5o3ly8fq8tzddgmkj30jg0g7q36.jpg")
+                .load(feel.userUrl)
                 .apply(new RequestOptions().circleCrop())
                 .into(mBinding.dailyFeelInclude.mainDailyFeelImageView);
+        mBinding.dailyFeelInclude.mainDailyFeelNameText.setText(feel.userName);
+        mBinding.dailyFeelInclude.mainDailyFeelTitleText.setText(feel.title);
+        mBinding.dailyFeelInclude.mainDailyFeelTimeText.setText(feel.timeStr);
         mBinding.dailyFeelInclude.mainDailyFeelCopyLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
+                }
+        });
+
+        mBinding.dailyFeelInclude.mainDailyFeelMoreLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), FeelActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -1,11 +1,17 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
+import org.jsoup.helper.StringUtil;
+
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -93,5 +99,45 @@ public class Utils {
             }
         }
         return result;
+    }
+
+    public static String getUTF8StringFromGBKString(String gbkStr) {
+        try {
+            return new String(getUTF8BytesFromGBKString(gbkStr), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new InternalError();
+        }
+    }
+
+    public static byte[] getUTF8BytesFromGBKString(String gbkStr) {
+        int n = gbkStr.length();
+        byte[] utfBytes = new byte[3 * n];
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            int m = gbkStr.charAt(i);
+            if (m < 128 && m >= 0) {
+                utfBytes[k++] = (byte) m;
+                continue;
+            }
+            utfBytes[k++] = (byte) (0xe0 | (m >> 12));
+            utfBytes[k++] = (byte) (0x80 | ((m >> 6) & 0x3f));
+            utfBytes[k++] = (byte) (0x80 | (m & 0x3f));
+        }
+        if (k < utfBytes.length) {
+            byte[] tmp = new byte[k];
+            System.arraycopy(utfBytes, 0, tmp, 0, k);
+            return tmp;
+        }
+        return utfBytes;
+    }
+
+    public static String getUserAgent(Context context) {
+        WebView webview;
+        webview = new WebView(context);
+        webview.layout(0, 0, 0, 0);
+        WebSettings settings = webview.getSettings();
+        String ua = settings.getUserAgentString();
+        int pos = ua.indexOf("AppleWebKit");
+        return ua.substring(0, pos) + "AppleWebKit/533.28 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
     }
 }

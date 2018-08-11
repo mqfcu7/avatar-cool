@@ -1,7 +1,5 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -24,8 +22,9 @@ public class CrawlerThread extends Thread {
     private static CrawlerThread sCrawlerThread = new CrawlerThread();
 
     private static final String DOMAIN_TOUXIANG = "https://www.woyaogexing.com";
-    private static final int MAX_VATAR_NUM = 1000;
+    private static final int MAX_VATAR_NUM = 200;
 
+    public static String sUA = "";
     private Random mRandom = new Random();
     private Database mDatabase;
     private int mTouXiangPageNum = 1;
@@ -61,17 +60,18 @@ public class CrawlerThread extends Thread {
     public void setDatabase(Database db) {
         mDatabase = db;
     }
+    public static void setUA(String ua) { sUA = ua; }
 
     @Override
     public void run() {
         while (true) {
             crawlAvatarSuites();
+            crawlFeelSuite();
 
             crawlGirlAvatars();
             crawlBoyAvatars();
             crawlLovesAvatars();
             crawlFriendAvatars();
-
             crawlPetAvatars();
             crawlComicAvatars();
             crawlGameAvatars();
@@ -405,5 +405,21 @@ public class CrawlerThread extends Thread {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private void crawlFeelSuite() {
+        if (sUA.isEmpty()) {
+            return;
+        }
+
+        List<FeelSuite> suites = CrawlerFeelSuite.crawlDailyFeel("http://qianming.appchizi.com/index.php/NewApi38/index/cid/qutu/p/1/markId/0/pt/c360", sUA);
+        if (suites.isEmpty()) {
+            return;
+        }
+
+        if (mDatabase != null) {
+            mDatabase.updateFeelSuite(suites);
+            sUA = "";
+        }
     }
 }

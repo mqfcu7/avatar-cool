@@ -22,6 +22,7 @@ public class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "com.mqfcu7.jianmeilan.avatar";
     private static final String TABLE_AVATAR_SUITE = "avatar_suite";
     private static final String TABLE_AVATARS = "avatars";
+    private static final String TABLE_FEEL_SUITE = "feel_suite";
 
     private static final int DATABASE_VERSION = 1;
 
@@ -31,7 +32,6 @@ public class Database extends SQLiteOpenHelper {
     private Context mContext;
 
     private Random mRandom = new Random();
-
 
     public static class AvatarType {
         public static final int GIRL = 1;
@@ -59,6 +59,15 @@ public class Database extends SQLiteOpenHelper {
         public static final String IMAGE_URL = "image_url";
     }
 
+    public abstract class FeelSuiteColumns implements BaseColumns {
+        public static final String ID = "id";
+        public static final String TITLE = "title";
+        public static final String USER_NAME = "user_name";
+        public static final String USER_AVATAR = "user_avatar";
+        public static final String TIME = "time";
+        public static final String TIME_STR = "time_str";
+    }
+
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
@@ -68,6 +77,7 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         createHotAvatarTable(db);
         createAvatarsTable(db);
+        createDailyFeelTable(db);
     }
 
     private void createHotAvatarTable(SQLiteDatabase db) {
@@ -97,6 +107,19 @@ public class Database extends SQLiteOpenHelper {
                 + AvatarsColumns.TYPE + " integer,"
                 + AvatarsColumns.IMAGE_URL + " text"
                 + ");");
+    }
+
+    private void createDailyFeelTable(SQLiteDatabase db) {
+        db.execSQL("create table " + TABLE_FEEL_SUITE + " ("
+                + FeelSuiteColumns._ID + " integer primary key,"
+                + FeelSuiteColumns.ID + " integer,"
+                + FeelSuiteColumns.TITLE + " text,"
+                + FeelSuiteColumns.USER_NAME + " text,"
+                + FeelSuiteColumns.USER_AVATAR + " text,"
+                + FeelSuiteColumns.TIME + " long,"
+                + FeelSuiteColumns.TIME_STR + " text"
+                + ");");
+        db.execSQL("insert into " + TABLE_FEEL_SUITE + " values(0,78615,'人生永远没有最晚的开始，真正晚的是你从未开始。','时光切片','http://tva1.sinaimg.cn/crop.0.0.180.180.180/90ac16aejw1e8qgp5bmzyj2050050aa8.jpg',1533875336,'8月10日 12:28');");
     }
 
     @Override
@@ -173,48 +196,6 @@ public class Database extends SQLiteOpenHelper {
         }
 
         updateVisitedAvatarSuites(result);
-
-        /*
-        if (is_strict && num > 0) {
-            List<AvatarSuite> suites = getOldAvatarSuites(num);
-            for (AvatarSuite suite : suites) {
-                boolean repeat = false;
-                for (AvatarSuite s : result) {
-                    if (s.id == suite.id) {
-                        repeat = true;
-                        break;
-                    }
-                }
-                if (!repeat) {
-                    result.add(suite);
-                }
-            }
-        }
-        */
-
-        return result;
-    }
-
-    private List<AvatarSuite> getOldAvatarSuites(int num) {
-        List<AvatarSuite> result = new ArrayList<>();
-
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(TABLE_AVATAR_SUITE);
-        qb.appendWhere(AvatarSuiteColumns.VISITED + "=1");
-
-        Cursor c = null;
-        try {
-            SQLiteDatabase db = getReadableDatabase();
-            c = qb.query(db, null, null, null, null, null, AvatarSuiteColumns._ID + " desc");
-            while (c.moveToNext() && num > 0) {
-                result.add(buildAvatarSuite(c));
-                num --;
-            }
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
 
         return result;
     }
@@ -315,5 +296,53 @@ public class Database extends SQLiteOpenHelper {
 
     private String serializeImagesUrl(final List<String> images_url) {
         return  StringUtil.join(images_url, ",");
+    }
+
+    public FeelSuite getFeelSuite() {
+
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(TABLE_FEEL_SUITE);
+
+        List<FeelSuite> list = new LinkedList<>();
+        Cursor c = null;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            c = qb.query(db, null, null, null, null, null, null);
+            while (c.moveToNext()) {
+                FeelSuite feel = new FeelSuite();
+                feel.title = c.getString(c.getColumnIndex(FeelSuiteColumns.TITLE));
+                feel.userName = c.getString(c.getColumnIndex(FeelSuiteColumns.USER_NAME));
+                feel.userUrl = c.getString(c.getColumnIndex(FeelSuiteColumns.USER_AVATAR));
+                feel.timeStr = c.getString(c.getColumnIndex(FeelSuiteColumns.TIME_STR));
+                list.add(feel);
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+
+        if (list.isEmpty()) {
+            return null;
+        }
+
+        return list.get(mRandom.nextInt(list.size()));
+    }
+
+    public void updateFeelSuite(List<FeelSuite> suites) {
+        SQLiteDatabase db = getWritableDatabase();
+        int id = 0;
+        for (FeelSuite feel : suites) {
+            ContentValues values = new ContentValues();
+            values.put(FeelSuiteColumns.TITLE, feel.title);
+            values.put(FeelSuiteColumns.USER_NAME, feel.userName);
+            values.put(FeelSuiteColumns.USER_AVATAR, feel.userUrl);
+            values.put(FeelSuiteColumns.TIME_STR, feel.timeStr);
+
+            if (0 == db.update(TABLE_FEEL_SUITE, values, FeelSuiteColumns._ID + "=" + id, null)) {
+                db.insert(TABLE_FEEL_SUITE, FeelSuiteColumns._ID, values);
+            }
+            id ++;
+        }
     }
 }
