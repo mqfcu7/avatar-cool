@@ -31,7 +31,6 @@ public class CrawlerFeelSuite extends Object {
         List<FeelSuite> suites = crawlDailyFeel(urlPage, mUA);
         if (!suites.isEmpty()) {
             mLastId = ((LinkedList<FeelSuite>) suites).getLast().id;
-            Log.d("TAG", "mLastId: " + mLastId);
         }
         return suites;
     }
@@ -41,7 +40,6 @@ public class CrawlerFeelSuite extends Object {
         List<FeelSuite> suites = crawlDailyFeel(urlPage, mUA);
         if (!suites.isEmpty()) {
             mLastId = ((LinkedList<FeelSuite>) suites).getLast().id;
-            Log.d("TAG", "mLastId: " + mLastId);
         }
         return suites;
     }

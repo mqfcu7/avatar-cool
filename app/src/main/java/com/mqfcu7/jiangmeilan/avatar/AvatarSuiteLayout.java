@@ -361,7 +361,7 @@ public class AvatarSuiteLayout extends LinearLayout {
             }
         }
         int offx = PADDING_IMAGE;
-        int offy = width * 2 + PADDING_IMAGE + TITLE_HEIGHT;
+        int offy = width * 2 + PADDING_IMAGE * 2 + TITLE_HEIGHT;
         for (int i = 0; i < 4; ++ i) {
             final String url = mAvatarSuite.images_url.get(i + 5);
             ImageView v = new ImageView(getContext());

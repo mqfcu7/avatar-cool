@@ -62,6 +62,9 @@ public class Database extends SQLiteOpenHelper {
     public abstract class FeelSuiteColumns implements BaseColumns {
         public static final String ID = "id";
         public static final String TITLE = "title";
+        public static final String IMAGE_WIDTH = "image_width";
+        public static final String IMAGE_HEIGHT = "image_height";
+        public static final String IMAGE_URL = "image_url";
         public static final String USER_NAME = "user_name";
         public static final String USER_AVATAR = "user_avatar";
         public static final String TIME = "time";
@@ -114,12 +117,15 @@ public class Database extends SQLiteOpenHelper {
                 + FeelSuiteColumns._ID + " integer primary key,"
                 + FeelSuiteColumns.ID + " integer,"
                 + FeelSuiteColumns.TITLE + " text,"
+                + FeelSuiteColumns.IMAGE_WIDTH + " integer,"
+                + FeelSuiteColumns.IMAGE_HEIGHT + " integer,"
+                + FeelSuiteColumns.IMAGE_URL + " text,"
                 + FeelSuiteColumns.USER_NAME + " text,"
                 + FeelSuiteColumns.USER_AVATAR + " text,"
                 + FeelSuiteColumns.TIME + " long,"
                 + FeelSuiteColumns.TIME_STR + " text"
                 + ");");
-        db.execSQL("insert into " + TABLE_FEEL_SUITE + " values(0,78615,'人生永远没有最晚的开始，真正晚的是你从未开始。','时光切片','http://tva1.sinaimg.cn/crop.0.0.180.180.180/90ac16aejw1e8qgp5bmzyj2050050aa8.jpg',1533875336,'8月10日 12:28');");
+        db.execSQL("insert into " + TABLE_FEEL_SUITE + " values(0,78615,'人生永远没有最晚的开始，真正晚的是你从未开始。',440,550,'http://wx3.sinaimg.cn/bmiddle/9cf33a33ly1fu4h3auhl6j20u011i783.jpg','时光切片','http://tva1.sinaimg.cn/crop.0.0.180.180.180/90ac16aejw1e8qgp5bmzyj2050050aa8.jpg',1533875336,'8月10日 12:28');");
     }
 
     @Override
@@ -299,7 +305,15 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public FeelSuite getFeelSuite() {
+        List<FeelSuite> list = getBatchFeelSuites();
+        if (list.isEmpty()) {
+            return null;
+        }
 
+        return list.get(mRandom.nextInt(list.size()));
+    }
+
+    public List<FeelSuite> getBatchFeelSuites() {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(TABLE_FEEL_SUITE);
 
@@ -309,11 +323,7 @@ public class Database extends SQLiteOpenHelper {
             SQLiteDatabase db = getReadableDatabase();
             c = qb.query(db, null, null, null, null, null, null);
             while (c.moveToNext()) {
-                FeelSuite feel = new FeelSuite();
-                feel.title = c.getString(c.getColumnIndex(FeelSuiteColumns.TITLE));
-                feel.userName = c.getString(c.getColumnIndex(FeelSuiteColumns.USER_NAME));
-                feel.userUrl = c.getString(c.getColumnIndex(FeelSuiteColumns.USER_AVATAR));
-                feel.timeStr = c.getString(c.getColumnIndex(FeelSuiteColumns.TIME_STR));
+                FeelSuite feel = parseFeelSuite(c);
                 list.add(feel);
             }
         } finally {
@@ -321,28 +331,40 @@ public class Database extends SQLiteOpenHelper {
                 c.close();
             }
         }
-
-        if (list.isEmpty()) {
-            return null;
-        }
-
-        return list.get(mRandom.nextInt(list.size()));
+        return list;
     }
 
     public void updateFeelSuite(List<FeelSuite> suites) {
         SQLiteDatabase db = getWritableDatabase();
-        int id = 0;
+        db.execSQL("delete from " + TABLE_FEEL_SUITE);
+        db.execSQL("VACUUM");
         for (FeelSuite feel : suites) {
             ContentValues values = new ContentValues();
+            values.put(FeelSuiteColumns.ID, feel.id);
             values.put(FeelSuiteColumns.TITLE, feel.title);
+            values.put(FeelSuiteColumns.IMAGE_WIDTH, feel.imageWidth);
+            values.put(FeelSuiteColumns.IMAGE_HEIGHT, feel.imageHeight);
+            values.put(FeelSuiteColumns.IMAGE_URL, feel.imageUrl);
             values.put(FeelSuiteColumns.USER_NAME, feel.userName);
             values.put(FeelSuiteColumns.USER_AVATAR, feel.userUrl);
+            values.put(FeelSuiteColumns.TIME, feel.time);
             values.put(FeelSuiteColumns.TIME_STR, feel.timeStr);
 
-            if (0 == db.update(TABLE_FEEL_SUITE, values, FeelSuiteColumns._ID + "=" + id, null)) {
-                db.insert(TABLE_FEEL_SUITE, FeelSuiteColumns._ID, values);
-            }
-            id ++;
+            db.insert(TABLE_FEEL_SUITE, FeelSuiteColumns._ID, values);
         }
+    }
+
+    private FeelSuite parseFeelSuite(Cursor c) {
+        FeelSuite feel = new FeelSuite();
+        feel.id = c.getInt(c.getColumnIndex(FeelSuiteColumns.ID));
+        feel.title = c.getString(c.getColumnIndex(FeelSuiteColumns.TITLE));
+        feel.imageWidth = c.getInt(c.getColumnIndex(FeelSuiteColumns.IMAGE_WIDTH));
+        feel.imageHeight = c.getInt(c.getColumnIndex(FeelSuiteColumns.IMAGE_HEIGHT));
+        feel.imageUrl = c.getString(c.getColumnIndex(FeelSuiteColumns.IMAGE_URL));
+        feel.userName = c.getString(c.getColumnIndex(FeelSuiteColumns.USER_NAME));
+        feel.userUrl = c.getString(c.getColumnIndex(FeelSuiteColumns.USER_AVATAR));
+        feel.time = c.getLong(c.getColumnIndex(FeelSuiteColumns.TIME));
+        feel.timeStr = c.getString(c.getColumnIndex(FeelSuiteColumns.TIME_STR));
+        return feel;
     }
 }
