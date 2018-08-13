@@ -1,5 +1,8 @@
 package com.mqfcu7.jiangmeilan.avatar;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -33,13 +38,12 @@ import java.util.TreeSet;
 
 public class FeelActivity extends AppCompatActivity {
     private ActivityFeelBinding mBinding;
-    private Database mDatabase;
     private RecyclerView mRecyclerView;
     private RecyclerAdapterWithHF mAdapter;
     private PtrClassicFrameLayout mFrameLayout;
     private CrawlerFeelSuite mCrawlerFeelSuite = new CrawlerFeelSuite();
 
-    private List<FeelSuite> mFeelList;
+    private List<FeelSuite> mFeelList = new LinkedList<>();
     private Handler mHandler = new Handler();
 
     @Override
@@ -47,7 +51,6 @@ public class FeelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_feel);
         Utils.setStatusBarLightMode(this, getWindow(), true);
-        mDatabase = new Database(getApplicationContext());
         mCrawlerFeelSuite.init(Utils.getUserAgent(getApplicationContext()));
 
         initBackBanner();
@@ -77,11 +80,6 @@ public class FeelActivity extends AppCompatActivity {
     }
 
     private void createFeelList() {
-        mFeelList = mDatabase.getBatchFeelSuites();
-        for (FeelSuite feel : mFeelList) {
-            Log.d("TAG", "id: " + feel.id + ", title: " + feel.title);
-        }
-
         mRecyclerView = mBinding.feelRecycleView;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         FeelAdapter adapter = new FeelAdapter(mFeelList);
@@ -92,14 +90,25 @@ public class FeelActivity extends AppCompatActivity {
     private void createFrameLayout() {
         mFrameLayout = mBinding.feelFrameLayout;
         mFrameLayout.setLoadMoreEnable(true);
+        mFrameLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mFrameLayout.autoRefresh(true);
+            }
+        }, 100);
         mFrameLayout.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                final int num = updateNewestFeelList();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateNewestFeelList();
+                    }
+                }).start();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter.notifyItemRangeChanged(0, num);
+                        mAdapter.notifyDataSetChanged();
                         mFrameLayout.refreshComplete();
                     }
                 }, 1000);
@@ -108,7 +117,12 @@ public class FeelActivity extends AppCompatActivity {
         mFrameLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void loadMore() {
-                final int num = updateLasterFeelList();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateLasterFeelList();
+                    }
+                }).start();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -129,6 +143,9 @@ public class FeelActivity extends AppCompatActivity {
             if (idSet.contains(feel.id)) {
                 continue;
             }
+            if (feel.id == 100000001) {
+                continue;
+            }
             ((LinkedList<FeelSuite>) mFeelList).addFirst(feel);
             cnt ++;
         }
@@ -141,6 +158,9 @@ public class FeelActivity extends AppCompatActivity {
         int cnt = 0;
         for (FeelSuite feel : suites) {
             if (idSet.contains(feel.id)) {
+                continue;
+            }
+            if (feel.id == 100000001) {
                 continue;
             }
             ((LinkedList<FeelSuite>) mFeelList).addLast(feel);
@@ -162,8 +182,9 @@ public class FeelActivity extends AppCompatActivity {
         private ImageView mUserImage;
         private TextView mUserName;
         private TextView mTitle;
-        private ImageView mImage;
+        private FeelImageLayout mImage;
         private TextView mTime;
+        private LinearLayout mCopyLayout;
 
         public FeelHolder(View v) {
             super(v);
@@ -172,11 +193,12 @@ public class FeelActivity extends AppCompatActivity {
             mUserImage = (ImageView)v.findViewById(R.id.item_feel_user_image);
             mUserName = (TextView)v.findViewById(R.id.item_feel_user_name_text);
             mTitle = (TextView)v.findViewById(R.id.item_feel_title_text);
-            mImage = (ImageView)v.findViewById(R.id.item_feel_image);
+            mImage = (FeelImageLayout) v.findViewById(R.id.item_feel_image);
             mTime = (TextView)v.findViewById(R.id.item_feel_time_text);
+            mCopyLayout = (LinearLayout)v.findViewById(R.id.item_feel_copy_layout);
         }
 
-        public void bindFeel(FeelSuite feel) {
+        public void bindFeel(final FeelSuite feel) {
             mUserName.setText(feel.userName);
             Glide.with(mView.getContext())
                     .load(feel.userUrl)
@@ -185,10 +207,17 @@ public class FeelActivity extends AppCompatActivity {
                     .into(mUserImage);
             mTitle.setText(feel.title);
 
-            Glide.with(mView.getContext())
-                    .load(feel.imageUrl)
-                    .into(mImage);
+            mImage.setImage(feel.imageUrl, feel.imageWidth, feel.imageHeight);
+
             mTime.setText(feel.timeStr);
+            mCopyLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    cm.setPrimaryClip(ClipData.newPlainText("Label", feel.title));
+                    Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -217,5 +246,7 @@ public class FeelActivity extends AppCompatActivity {
         public int getItemCount() {
             return mFeelList.size();
         }
+
+
     }
 }

@@ -9,6 +9,9 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityMainBinding;
 import com.umeng.analytics.MobclickAgent;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDailyFeel() {
-        FeelSuite feel = mDatabase.getFeelSuite();
+        final FeelSuite feel = mDatabase.getFeelSuite();
         Glide.with(getApplicationContext())
                 .load(feel.userUrl)
                 .apply(new RequestOptions().circleCrop())
@@ -231,10 +234,19 @@ public class MainActivity extends AppCompatActivity {
         mBinding.dailyFeelInclude.mainDailyFeelCopyLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    cm.setPrimaryClip(ClipData.newPlainText("Label", feel.title));
                     Toast.makeText(getApplicationContext(), "复制成功", Toast.LENGTH_SHORT).show();
                 }
         });
 
+        mBinding.dailyFeelInclude.mainDailyFeelTitleText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FeelActivity.class);
+                startActivity(intent);
+            }
+        });
         mBinding.dailyFeelInclude.mainDailyFeelMoreLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
