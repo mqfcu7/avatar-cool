@@ -5,8 +5,12 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <application
         android:name=".App"
@@ -17,12 +21,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data android:value="5b6a8031a40fa31d91000304" android:name="UMENG_APPKEY"/>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
+        <activity android:name=".SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
         </activity>
         <activity android:name=".AvatarListActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
         </activity>
@@ -42,6 +48,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <service
+            android:name="com.qq.e.comm.DownloadService"
+            android:exported="false"/>
+        <activity
+            android:name="com.qq.e.ads.ADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
     </application>
 
 </manifest>

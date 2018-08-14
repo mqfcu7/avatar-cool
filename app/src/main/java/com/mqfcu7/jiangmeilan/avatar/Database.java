@@ -307,7 +307,12 @@ public class Database extends SQLiteOpenHelper {
     public FeelSuite getFeelSuite() {
         List<FeelSuite> list = getBatchFeelSuites();
         if (list.isEmpty()) {
-            return null;
+            FeelSuite feel = new FeelSuite();
+            feel.id = 78615;
+            feel.title = "人生永远没有最晚的开始，真正晚的是你从未开始";
+            feel.userUrl = "http://tva1.sinaimg.cn/crop.0.0.180.180.180/90ac16aejw1e8qgp5bmzyj2050050aa8.jpg";
+            feel.userName = "时光切片";
+            feel.timeStr = "8月10日 12:28";
         }
 
         return list.get(mRandom.nextInt(list.size()));

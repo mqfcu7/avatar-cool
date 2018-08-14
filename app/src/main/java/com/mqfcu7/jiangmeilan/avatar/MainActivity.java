@@ -305,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
         mHotAvatarRecyclerView.setItemViewCacheSize(20);
         mHotAvatarRecyclerView.setDrawingCacheEnabled(true);
         mHotAvatarRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        //ViewCompat.setNestedScrollingEnabled(mHotAvatarRecyclerView, false);
 
         mNestedScrollView = mBinding.mainNestedScrollView;
         mNestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
