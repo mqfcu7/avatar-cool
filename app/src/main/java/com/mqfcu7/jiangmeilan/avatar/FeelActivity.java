@@ -30,21 +30,39 @@ import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityFeelBinding;
 import com.umeng.analytics.MobclickAgent;
 
+import com.qq.e.ads.nativ.ADSize;
+import com.qq.e.ads.nativ.NativeExpressAD;
+import com.qq.e.ads.nativ.NativeExpressADView;
+import com.qq.e.ads.nativ.NativeExpressMediaListener;
+import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.pi.AdData;
+import com.qq.e.comm.util.AdError;
+import com.qq.e.comm.util.GDTLogger;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashMap;
 import java.util.TreeSet;
 
-public class FeelActivity extends AppCompatActivity {
+public class FeelActivity extends AppCompatActivity implements NativeExpressAD.NativeExpressADListener {
+    public static final int AD_COUNT = 5;    // 加载广告的条数，取值范围为[1, 10]
+    public static int FIRST_AD_POSITION = 3; // 第一条广告的位置
+    public static int ITEMS_PER_AD = 4;     // 每间隔10个条目插入一条广告
+
     private ActivityFeelBinding mBinding;
     private RecyclerView mRecyclerView;
+    private FeelAdapter mFeelAdapter;
     private RecyclerAdapterWithHF mAdapter;
     private PtrClassicFrameLayout mFrameLayout;
     private CrawlerFeelSuite mCrawlerFeelSuite = new CrawlerFeelSuite();
+    private NativeExpressAD mADManager;
+    private List<NativeExpressADView> mAdViewList;
 
-    private List<FeelSuite> mFeelList = new LinkedList<>();
+    private List<Object> mFeelList = new LinkedList<>();
     private Handler mHandler = new Handler();
+    private HashMap<NativeExpressADView, Integer> mAdViewPositionMap = new HashMap<NativeExpressADView, Integer>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +88,17 @@ public class FeelActivity extends AppCompatActivity {
         MobclickAgent.onPause(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mAdViewList != null) {
+            for (NativeExpressADView view : mAdViewList) {
+                view.destroy();
+            }
+        }
+    }
+
     private void initBackBanner() {
         mBinding.feelBackImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,9 +111,10 @@ public class FeelActivity extends AppCompatActivity {
     private void createFeelList() {
         mRecyclerView = mBinding.feelRecycleView;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        FeelAdapter adapter = new FeelAdapter(mFeelList);
-        mAdapter = new RecyclerAdapterWithHF(adapter);
+        mFeelAdapter = new FeelAdapter(mFeelList);
+        mAdapter = new RecyclerAdapterWithHF(mFeelAdapter);
         mRecyclerView.setAdapter(mAdapter);
+        initNativeExpressAD();
     }
 
     private void createFrameLayout() {
@@ -146,7 +176,7 @@ public class FeelActivity extends AppCompatActivity {
             if (feel.id == 100000001) {
                 continue;
             }
-            ((LinkedList<FeelSuite>) mFeelList).addFirst(feel);
+            ((LinkedList<Object>) mFeelList).addFirst(feel);
             cnt ++;
         }
         return cnt;
@@ -163,7 +193,7 @@ public class FeelActivity extends AppCompatActivity {
             if (feel.id == 100000001) {
                 continue;
             }
-            ((LinkedList<FeelSuite>) mFeelList).addLast(feel);
+            ((LinkedList<Object>) mFeelList).addLast(feel);
             cnt ++;
         }
         return cnt;
@@ -171,10 +201,79 @@ public class FeelActivity extends AppCompatActivity {
 
     private Set<Integer> getFeelIdSet() {
         Set<Integer> idSet = new TreeSet<>();
-        for (FeelSuite feel : mFeelList) {
-            idSet.add(feel.id);
+        for (Object feel : mFeelList) {
+            if (feel instanceof FeelSuite) {
+                idSet.add(((FeelSuite)feel).id);
+            }
         }
         return idSet;
+    }
+
+    private void initNativeExpressAD() {
+        ADSize adSize = new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT);
+        mADManager = new NativeExpressAD(FeelActivity.this, adSize, Constants.APPID, Constants.NativeExpressPosID, this);
+        mADManager.loadAD(AD_COUNT);
+    }
+
+    @Override
+    public void onNoAD(AdError adError) {
+        Log.d(
+                "TAG",
+                String.format("onNoAD, error code: %d, error msg: %s", adError.getErrorCode(),
+                        adError.getErrorMsg()));
+    }
+
+    @Override
+    public void onADLoaded(List<NativeExpressADView> adList) {
+        mAdViewList = adList;
+        for (int i = 0; i < mAdViewList.size(); i++) {
+            int position = FIRST_AD_POSITION + ITEMS_PER_AD * i;
+            if (position < mFeelList.size()) {
+                NativeExpressADView view = mAdViewList.get(i);
+                if (view.getBoundData().getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
+                    view.setMediaListener(mediaListener);
+                }
+                mAdViewPositionMap.put(view, position); // 把每个广告在列表中位置记录下来
+                mFeelAdapter.addADViewToPosition(position, mAdViewList.get(i));
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRenderFail(NativeExpressADView adView) {
+    }
+
+    @Override
+    public void onRenderSuccess(NativeExpressADView adView) {
+    }
+
+    @Override
+    public void onADExposure(NativeExpressADView adView) {
+    }
+
+    @Override
+    public void onADClicked(NativeExpressADView adView) {
+    }
+
+    @Override
+    public void onADClosed(NativeExpressADView adView) {
+        if (mFeelAdapter != null) {
+            int removedPosition = mAdViewPositionMap.get(adView);
+            mFeelAdapter.removeADView(removedPosition, adView);
+        }
+    }
+
+    @Override
+    public void onADLeftApplication(NativeExpressADView adView) {
+    }
+
+    @Override
+    public void onADOpenOverlay(NativeExpressADView adView) {
+    }
+
+    @Override
+    public void onADCloseOverlay(NativeExpressADView adView) {
     }
 
     private class FeelHolder extends RecyclerView.ViewHolder {
@@ -185,6 +284,7 @@ public class FeelActivity extends AppCompatActivity {
         private FeelImageLayout mImage;
         private TextView mTime;
         private LinearLayout mCopyLayout;
+        public ViewGroup container;
 
         public FeelHolder(View v) {
             super(v);
@@ -196,6 +296,7 @@ public class FeelActivity extends AppCompatActivity {
             mImage = (FeelImageLayout) v.findViewById(R.id.item_feel_image);
             mTime = (TextView)v.findViewById(R.id.item_feel_time_text);
             mCopyLayout = (LinearLayout)v.findViewById(R.id.item_feel_copy_layout);
+            container = (ViewGroup) v.findViewById(R.id.express_ad_container);
         }
 
         public void bindFeel(final FeelSuite feel) {
@@ -222,31 +323,137 @@ public class FeelActivity extends AppCompatActivity {
     }
 
     private class FeelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private List<FeelSuite> mFeelList;
+        static final int TYPE_DATA = 0;
+        static final int TYPE_AD = 1;
 
-        public FeelAdapter(List<FeelSuite> feelSuites) {
+        private List<Object> mFeelList;
+
+        public FeelAdapter(List<Object> feelSuites) {
             mFeelList = feelSuites;
+        }
+
+        public void addADViewToPosition(int position, NativeExpressADView adView) {
+            if (position >= 0 && position < mFeelList.size() && adView != null) {
+                mFeelList.add(position, adView);
+            }
+        }
+
+        public void removeADView(int position, NativeExpressADView adView) {
+            mFeelList.remove(position);
+            mAdapter.notifyItemRemoved(position); // position为adView在当前列表中的位置
+            mAdapter.notifyItemRangeChanged(0, mFeelList.size() - 1);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return mFeelList.get(position) instanceof NativeExpressADView ? TYPE_AD : TYPE_DATA;
         }
 
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            int layoutId = (viewType == TYPE_AD) ? R.layout.list_item_express_ad : R.layout.list_item_feel;
             LayoutInflater inflater = LayoutInflater.from(FeelActivity.this);
-            View v = inflater.inflate(R.layout.list_item_feel, parent, false);
+            View v = inflater.inflate(layoutId, parent, false);
             return new FeelHolder(v);
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            FeelSuite feel = mFeelList.get(position);
-            ((FeelHolder)holder).bindFeel(feel);
+            int type = getItemViewType(position);
+            if (TYPE_AD == type) {
+                final NativeExpressADView adView = (NativeExpressADView) mFeelList.get(position);
+                mAdViewPositionMap.put(adView, position); // 广告在列表中的位置是可以被更新的
+                FeelHolder feelHolder = (FeelHolder) holder;
+                if (feelHolder.container.getChildCount() > 0
+                        && feelHolder.container.getChildAt(0) == adView) {
+                    return;
+                }
+
+                if (feelHolder.container.getChildCount() > 0) {
+                    feelHolder.container.removeAllViews();
+                }
+
+                if (adView.getParent() != null) {
+                    ((ViewGroup) adView.getParent()).removeView(adView);
+                }
+
+                feelHolder.container.addView(adView);
+                adView.render(); // 调用render方法后sdk才会开始展示广告
+            } else {
+                FeelSuite feel = (FeelSuite) mFeelList.get(position);
+                ((FeelHolder) holder).bindFeel(feel);
+            }
         }
 
         @Override
         public int getItemCount() {
             return mFeelList.size();
         }
-
-
     }
+
+    private String getAdInfo(NativeExpressADView nativeExpressADView) {
+        AdData adData = nativeExpressADView.getBoundData();
+        if (adData != null) {
+            StringBuilder infoBuilder = new StringBuilder();
+            infoBuilder.append("title:").append(adData.getTitle()).append(",")
+                    .append("desc:").append(adData.getDesc()).append(",")
+                    .append("patternType:").append(adData.getAdPatternType());
+            if (adData.getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
+                infoBuilder.append(", video info: ")
+                        .append(getVideoInfo(adData.getProperty(AdData.VideoPlayer.class)));
+            }
+            return infoBuilder.toString();
+        }
+        return null;
+    }
+
+    private String getVideoInfo(AdData.VideoPlayer videoPlayer) {
+        if (videoPlayer != null) {
+            StringBuilder videoBuilder = new StringBuilder();
+            videoBuilder.append("state:").append(videoPlayer.getVideoState()).append(",")
+                    .append("duration:").append(videoPlayer.getDuration()).append(",")
+                    .append("position:").append(videoPlayer.getCurrentPosition());
+            return videoBuilder.toString();
+        }
+        return null;
+    }
+
+    private NativeExpressMediaListener mediaListener = new NativeExpressMediaListener() {
+        @Override
+        public void onVideoInit(NativeExpressADView nativeExpressADView) {
+        }
+
+        @Override
+        public void onVideoLoading(NativeExpressADView nativeExpressADView) {
+        }
+
+        @Override
+        public void onVideoReady(NativeExpressADView nativeExpressADView, long l) {
+        }
+
+        @Override
+        public void onVideoStart(NativeExpressADView nativeExpressADView) {
+        }
+
+        @Override
+        public void onVideoPause(NativeExpressADView nativeExpressADView) {
+        }
+
+        @Override
+        public void onVideoComplete(NativeExpressADView nativeExpressADView) {
+        }
+
+        @Override
+        public void onVideoError(NativeExpressADView nativeExpressADView, AdError adError) {
+        }
+
+        @Override
+        public void onVideoPageOpen(NativeExpressADView nativeExpressADView) {
+        }
+
+        @Override
+        public void onVideoPageClose(NativeExpressADView nativeExpressADView) {
+        }
+    };
 }

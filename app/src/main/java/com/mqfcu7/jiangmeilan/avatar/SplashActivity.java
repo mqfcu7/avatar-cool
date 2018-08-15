@@ -150,7 +150,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
 
     @Override
     public void onADPresent() {
-
+        skipView.setVisibility(View.VISIBLE);
     }
 
     @Override

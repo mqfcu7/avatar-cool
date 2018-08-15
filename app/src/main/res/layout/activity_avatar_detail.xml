@@ -74,13 +74,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/avatar_detail_banner_container"
                 android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="vertical">
-
-            </LinearLayout>
+                android:layout_height="wrap_content">
+            </FrameLayout>
 
         </RelativeLayout>
 

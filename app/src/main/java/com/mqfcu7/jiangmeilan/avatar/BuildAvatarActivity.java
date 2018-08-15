@@ -59,7 +59,6 @@ public class BuildAvatarActivity extends AppCompatActivity {
 
         initTitleBanner();
         mBinding.stickerItemView.setStickerView(mBinding.stickerView);
-
         mBinding.stickerView.setActivity(this);
     }
 

@@ -22,6 +22,7 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/background_circle"
             android:gravity="center"
+            android:visibility="invisible"
             android:text="跳过"
             android:textColor="@android:color/white"
             android:textSize="12dp"/>

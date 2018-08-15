@@ -73,6 +73,10 @@ public class StickerItemView extends View {
         for (int i = 0; i < VERTICAL_IMAGE_NUM; ++ i) {
             int offx = HORIZONTAL_PADDING;
             for (int j = 0; j < HORIZONTAL_IMAGE_NUM; ++ j) {
+                int pos = i * HORIZONTAL_IMAGE_NUM + j;
+                if (pos >= mStickerItems.length) {
+                    continue;
+                }
                 Bitmap image = BitmapFactory.decodeResource(getResources(), mStickerItems[i*HORIZONTAL_IMAGE_NUM+j]);
                 Rect r1 = new Rect(0, 0, image.getWidth(), image.getHeight());
                 Rect r2 = new Rect(offx, offy, offx + mImageWidth, offy + mImageWidth);

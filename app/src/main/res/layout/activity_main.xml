@@ -71,6 +71,12 @@
                         android:layout_marginTop="7dp"
                         />
 
+                    <FrameLayout
+                        android:id="@+id/main_banner_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    </FrameLayout>
+
                     <!-- daily avatar -->
                     <include
                         android:id="@+id/daily_avatar_include"

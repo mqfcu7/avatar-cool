@@ -3,20 +3,24 @@ package com.mqfcu7.jiangmeilan.avatar;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.mqfcu7.jiangmeilan.avatar.databinding.ActivityAvatarDetailBinding;
 import com.umeng.analytics.MobclickAgent;
+
+import com.qq.e.ads.banner.ADSize;
+import com.qq.e.ads.banner.AbstractBannerADListener;
+import com.qq.e.ads.banner.BannerView;
+import com.qq.e.comm.util.AdError;
 
 public class AvatarDetailActivity extends AppCompatActivity {
     private static final String EXTRA_AVATAR_URL =
@@ -24,6 +28,10 @@ public class AvatarDetailActivity extends AppCompatActivity {
 
     private ActivityAvatarDetailBinding mBinding;
     private String mImageUrl;
+
+    private ViewGroup bannerContainer;
+    BannerView bv;
+    String posId;
 
     public static Intent newIntent(Context context, String imageUrl) {
         Intent intent = new Intent(context, AvatarDetailActivity.class);
@@ -44,6 +52,8 @@ public class AvatarDetailActivity extends AppCompatActivity {
         initBackBanner();
         initforwardBanner();
         initImageViews();
+
+        initAd();
     }
 
     private void initBackBanner() {
@@ -123,6 +133,17 @@ public class AvatarDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void initAd() {
+        bannerContainer = mBinding.avatarDetailBannerContainer;
+        getBanner().loadAD();
+        bannerContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getBanner().loadAD();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -133,5 +154,33 @@ public class AvatarDetailActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    private BannerView getBanner() {
+        posId = Constants.DetailBannerPosID;
+        if(bv != null){
+            bannerContainer.removeView(bv);
+            bv.destroy();
+        }
+        bv = new BannerView(this, ADSize.BANNER, Constants.APPID, posId);
+        // 注意：如果开发者的banner不是始终展示在屏幕中的话，请关闭自动刷新，否则将导致曝光率过低。
+        // 并且应该自行处理：当banner广告区域出现在屏幕后，再手动loadAD。
+        bv.setRefresh(30);
+        bv.setADListener(new AbstractBannerADListener() {
+
+            @Override
+            public void onNoAD(AdError error) {
+                Log.d(
+                        "TAG",
+                        String.format("Banner onNoAD，eCode = %d, eMsg = %s", error.getErrorCode(),
+                                error.getErrorMsg()));
+            }
+
+            @Override
+            public void onADReceiv() {
+            }
+        });
+        bannerContainer.addView(bv);
+        return bv;
     }
 }

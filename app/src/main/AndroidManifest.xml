@@ -19,6 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <meta-data android:value="5b6a8031a40fa31d91000304" android:name="UMENG_APPKEY"/>
         <activity android:name=".SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">

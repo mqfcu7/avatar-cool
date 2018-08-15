@@ -13,10 +13,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
@@ -28,24 +26,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Toast;
 
-import org.jsoup.helper.StringUtil;
+import com.qq.e.ads.banner.ADSize;
+import com.qq.e.ads.banner.AbstractBannerADListener;
+import com.qq.e.ads.banner.BannerView;
+import com.qq.e.comm.util.AdError;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MAX_HOT_AVATAR_PAGE_NUM = 5;
     ActivityMainBinding mBinding;
-
-    public static String permissionArray[] = {
-            "android.permission.WRITE_EXTERNAL_STORAGE"
-    };
 
     private AvatarSuiteLayout mAvatarSuiteLayout;
 
@@ -61,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private CrawlerFeelSuite mCrawlerFeelSuite = new CrawlerFeelSuite();
     private List<FeelSuite> mFeelSuites;
     private Database mDatabase;
+
+    private ViewGroup bannerContainer;
+    BannerView bv;
+    String posId;
 
     private class AvatarSuiteHolder extends RecyclerView.ViewHolder {
         public AvatarSuiteLayout mAvatarSuiteLayout;
@@ -126,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Utils.setStatusBarLightMode(this, getWindow(), true);
-        requestPermission();
         mDatabase = new Database(getApplicationContext());
         mUA = Utils.getUserAgent(getApplicationContext());
         CrawlerThread.setUA(mUA);
@@ -139,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         initCategoryNavigateLayout();
         initDailyAvatar();
         initHotAvatar();
+
+        initAd();
     }
 
     @Override
@@ -284,8 +282,10 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 mSwipeLayout.setRefreshing(false);
 
+                                initDailyFeel();
                                 mHotAvatarAdapter.pushItems(mAvatarSuiteGenerator.getUpdateAvatarSuites(5));
                                 mHotAvatarAdapter.notifyItemRangeChanged(0, 5);
+                                getBanner().loadAD();
                             }
                         });
                     }
@@ -323,6 +323,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initAd() {
+        bannerContainer = mBinding.mainBannerContainer;
+        getBanner().loadAD();
+        bannerContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getBanner().loadAD();
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -331,30 +342,11 @@ public class MainActivity extends AppCompatActivity {
                 case PictureConfig.CHOOSE_REQUEST:
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     if (!selectList.isEmpty()) {
-                        Log.d("TAG", "photo: " + selectList.get(0).getCompressPath());
                         Intent intent = AvatarDetailActivity.newIntent(
                                 getApplicationContext(), selectList.get(0).getCompressPath());
                         startActivity(intent);
                     }
                     break;
-            }
-        }
-    }
-
-    private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            List<String> permissionList = new ArrayList<>();
-            for (String permission : permissionArray) {
-                if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionList.add(permission);
-                }
-            }
-            if (permissionList.size() > 0) {
-                requestPermissions(permissionList.toArray(new String[permissionList.size()]), 100);
-            }
-
-            if (checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 101);
             }
         }
     }
@@ -369,5 +361,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    private BannerView getBanner() {
+        posId = Constants.BannerPosID;
+        if(bv != null){
+            bannerContainer.removeView(bv);
+            bv.destroy();
+        }
+        bv = new BannerView(this, ADSize.BANNER, Constants.APPID, posId);
+        // 注意：如果开发者的banner不是始终展示在屏幕中的话，请关闭自动刷新，否则将导致曝光率过低。
+        // 并且应该自行处理：当banner广告区域出现在屏幕后，再手动loadAD。
+        bv.setRefresh(30);
+        bv.setADListener(new AbstractBannerADListener() {
+
+            @Override
+            public void onNoAD(AdError error) {
+                Log.d(
+                        "TAG",
+                        String.format("Banner onNoAD，eCode = %d, eMsg = %s", error.getErrorCode(),
+                                error.getErrorMsg()));
+            }
+
+            @Override
+            public void onADReceiv() {
+            }
+        });
+        bannerContainer.addView(bv);
+        return bv;
     }
 }

@@ -33,10 +33,11 @@
             android:id="@+id/item_feel_title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="7dp"
-            android:layout_marginBottom="7dp"
+            android:paddingHorizontal="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="12dp"
             android:textColor="@color/colorBlack"
-            android:textSize="15dp"/>
+            android:textSize="17dp"/>
 
         <com.mqfcu7.jiangmeilan.avatar.FeelImageLayout
             android:id="@+id/item_feel_image"
