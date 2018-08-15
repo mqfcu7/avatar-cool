@@ -49,7 +49,7 @@ import java.util.TreeSet;
 public class FeelActivity extends AppCompatActivity implements NativeExpressAD.NativeExpressADListener {
     public static final int AD_COUNT = 5;    // 加载广告的条数，取值范围为[1, 10]
     public static int FIRST_AD_POSITION = 3; // 第一条广告的位置
-    public static int ITEMS_PER_AD = 4;     // 每间隔10个条目插入一条广告
+    public static int ITEMS_PER_AD = 5;     // 每间隔10个条目插入一条广告
 
     private ActivityFeelBinding mBinding;
     private RecyclerView mRecyclerView;
